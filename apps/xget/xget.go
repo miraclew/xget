@@ -8,6 +8,9 @@ import (
     "io"
     "github.com/miraclew/xget/speeds"
     "errors"
+    "time"
+    "github.com/gosuri/uiprogress"
+    "strconv"
 )
 
 var (
@@ -24,6 +27,7 @@ func main() {
 
     flag.Parse()
 
+    uiprogress.Start()
     for i := 0; i < flag.NArg(); i++ {
         err := dl(flag.Arg(i))
         if err != nil {
@@ -33,7 +37,7 @@ func main() {
 }
 
 func dl(u string) error {
-    fmt.Println("start dl: ", u)
+    fmt.Println("Start dl: ", u)
 
     res, err := http.DefaultClient.Get(u)
     if err != nil {
@@ -42,6 +46,14 @@ func dl(u string) error {
 
     if res.StatusCode != http.StatusOK {
         return errors.New("dl failed: "+res.Status)
+    }
+
+    var contentLength string
+    if contentLength = res.Header.Get("Content-Length"); len(contentLength) > 0 {
+        fmt.Println("Length: "+ contentLength)
+        if contentType := res.Header.Get("Content-Type"); len(contentType) > 0 {
+            fmt.Println("Type: "+contentType)
+        }
     }
 
     buf := make([]byte, 1024)
@@ -59,9 +71,19 @@ func dl(u string) error {
 
     defer file.Close()
 
+    t1 := time.Now();
+    totalBytes := 0
+
+    length, err := strconv.ParseInt(contentLength, 10, 0)
+    bar := uiprogress.AddBar(int(length))
+    bar.AppendCompleted()
+    bar.PrependElapsed()
+
     for ; ;  {
         readBytes, err := res.Body.Read(buf)
         if readBytes > 0 {
+            totalBytes += readBytes
+            bar.Set(totalBytes)
             file.Write(buf[:readBytes])
         }
 
@@ -74,6 +96,12 @@ func dl(u string) error {
             }
         }
     }
+
+    t2 := time.Now()
+    cost := t2.Sub(t1)
+    var speed int64
+    speed = int64(totalBytes) * time.Second.Nanoseconds()/ cost.Nanoseconds()
+    fmt.Printf("Done(%s): Time=%s Speed=%d(B/s)\n", t2.String(), cost.String(), speed)
 
     return nil
 }
