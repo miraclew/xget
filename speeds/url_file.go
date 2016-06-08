@@ -20,3 +20,7 @@ func GetFileName(url_path string) (string,error) {
 
     return info.Path[idx+1:], nil
 }
+
+func GetByRange(url_path string) {
+
+}
