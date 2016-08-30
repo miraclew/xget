@@ -3,7 +3,6 @@ package speeds
 import (
     "testing"
     "fmt"
-    "errors"
     "net/http"
 )
 
