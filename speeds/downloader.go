@@ -1,11 +1,22 @@
 package speeds
 
 type Downloader struct {
-
+    task *Task
 }
 
-func (d *Downloader) dl(task *DLTask) error {
+func NewDownloader(t *Task) *Downloader {
+    return &Downloader{task:t}
+}
 
+func (d *Downloader) Start() error {
+    return nil
+}
+
+func (d *Downloader) Stop() error {
+    return nil
+}
+
+func (d *Downloader) Cancel () error {
     return nil
 }
 
