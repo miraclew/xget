@@ -16,3 +16,8 @@ GetResource
 2. Get chunks from api
 3. Start download chunks
 4. Merge chunks
+
+
+Client Design
+
+1. use sqlite3 to store downloading data
