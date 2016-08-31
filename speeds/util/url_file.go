@@ -1,4 +1,4 @@
-package speeds
+package util
 
 import (
     "net/url"

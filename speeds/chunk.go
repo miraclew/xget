@@ -1,4 +1,4 @@
-package model
+package speeds
 
 const (
     CHUNK_SIZE = 4096

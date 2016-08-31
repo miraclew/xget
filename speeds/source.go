@@ -1,4 +1,4 @@
-package model
+package speeds
 
 const (
     PROTOCOL_HTTP = 1

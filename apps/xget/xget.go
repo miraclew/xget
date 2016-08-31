@@ -5,12 +5,9 @@ import (
     "fmt"
     "os"
     "net/http"
-    "io"
-    "github.com/miraclew/xget/speeds"
-    "errors"
-    "time"
-    "github.com/gosuri/uiprogress"
-    "strconv"
+    "github.com/ant0ine/go-json-rest/rest"
+    log "github.com/Sirupsen/logrus"
+    "github.com/miraclew/xget/apps/xget/web/controllers"
 )
 
 var (
@@ -26,82 +23,41 @@ func main() {
     }
 
     flag.Parse()
-
-    uiprogress.Start()
-    for i := 0; i < flag.NArg(); i++ {
-        err := dl(flag.Arg(i))
-        if err != nil {
-            fmt.Println(err.Error())
-        }
-    }
 }
 
-func dl(u string) error {
-    fmt.Println("Start dl: ", u)
+func runRestApi() {
+    root := &controllers.RootController{}
 
-    res, err := http.DefaultClient.Get(u)
+    middlewares := []rest.Middleware{
+        &rest.TimerMiddleware{},
+        &rest.RecorderMiddleware{},
+        &rest.PoweredByMiddleware{},
+        &rest.RecoverMiddleware{
+            EnableResponseStackTrace: true,
+        },
+        &rest.JsonIndentMiddleware{},
+        &rest.ContentTypeCheckerMiddleware{},
+    }
+
+    api := rest.NewApi()
+    api.Use(middlewares...)
+    router, err := rest.MakeRouter(
+        rest.Get("/", root.Get),
+    )
+
     if err != nil {
-        return err
+        log.Fatal(err)
     }
 
-    if res.StatusCode != http.StatusOK {
-        return errors.New("dl failed: "+res.Status)
-    }
+    api.SetApp(router)
 
-    var contentLength string
-    if contentLength = res.Header.Get("Content-Length"); len(contentLength) > 0 {
-        fmt.Println("Length: "+ contentLength)
-        if contentType := res.Header.Get("Content-Type"); len(contentType) > 0 {
-            fmt.Println("Type: "+contentType)
-        }
-    }
+    http.Handle("/api/", http.StripPrefix("/api", api.MakeHandler()))
+    http.Handle("/web/", http.StripPrefix("/web", http.FileServer(http.Dir("./web/public"))))
 
-    buf := make([]byte, 1024)
-    filePath, err := speeds.GetFileName(u);
+    log.Info("ListenAndServe :8080")
+    err = http.ListenAndServe(":8080", nil)
     if err != nil {
-        fmt.Println(err.Error())
-        return err
+        log.Fatal(err)
+        os.Exit(-1)
     }
-
-    file, err := os.Create(filePath)
-    if err != nil {
-        fmt.Println(err.Error())
-        return err
-    }
-
-    defer file.Close()
-
-    t1 := time.Now();
-    totalBytes := 0
-
-    length, err := strconv.ParseInt(contentLength, 10, 0)
-    bar := uiprogress.AddBar(int(length))
-    bar.AppendCompleted()
-    bar.PrependElapsed()
-
-    for ; ;  {
-        readBytes, err := res.Body.Read(buf)
-        if readBytes > 0 {
-            totalBytes += readBytes
-            bar.Set(totalBytes)
-            file.Write(buf[:readBytes])
-        }
-
-        if err != nil {
-            if err != io.EOF {
-                return err
-            } else {
-                //fmt.Println(err.Error())
-                break
-            }
-        }
-    }
-
-    t2 := time.Now()
-    cost := t2.Sub(t1)
-    var speed int64
-    speed = int64(totalBytes) * time.Second.Nanoseconds()/ cost.Nanoseconds()
-    fmt.Printf("Done(%s): Time=%s Speed=%d(B/s)\n", t2.String(), cost.String(), speed)
-
-    return nil
 }

@@ -3,5 +3,5 @@
 version.go
 apps/xget/xget
 apps/xget/kafka-0.10.0.0-src.tgz
-apps/xget/ws.js
+apps/xget/web/public/js/ws.js
 .idea

@@ -1,4 +1,4 @@
-package speeds
+package io
 
 import (
     "os"

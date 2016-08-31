@@ -1,4 +1,4 @@
-package model
+package speeds
 
 // Resource represents an file on internet.
 type Resource struct {
