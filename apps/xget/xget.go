@@ -27,6 +27,7 @@ func main() {
 
 func runRestApi() {
     root := &controllers.RootController{}
+    task := &controllers.TaskController{}
 
     middlewares := []rest.Middleware{
         &rest.TimerMiddleware{},
@@ -43,6 +44,8 @@ func runRestApi() {
     api.Use(middlewares...)
     router, err := rest.MakeRouter(
         rest.Get("/", root.Get),
+        rest.Get("/tasks", task.GetList),
+        rest.Delete("/tasks/:id", task.Delete),
     )
 
     if err != nil {
