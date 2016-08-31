@@ -1,9 +1,11 @@
 package repositories
 
 import (
-    "github.com/miraclew/xget/speeds"
+    "github.com/miraclew/xget/apps/xget/web/model"
 )
 
 type TaskRepository interface {
-    FindAll() ([]*speeds.Task, error)
+    FindAll() ([]model.Task, error)
+    Add(t *model.Task) error
+    Delete(t *model.Task) error
 }
