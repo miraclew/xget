@@ -16,7 +16,7 @@ func NewTaskRepositoryImpl(db *gorm.DB) (*TaskRepositoryImpl) {
     }
 }
 
-func (r *TaskRepositoryImpl) FindAll() ([]model.Task, error) {
+func (r *TaskRepositoryImpl) GetAll() ([]model.Task, error) {
     var tasks []model.Task
 
     err := r.db.Find(&tasks).Error
@@ -31,6 +31,6 @@ func (r *TaskRepositoryImpl) Add(task *model.Task) (error) {
     return r.db.Create(task).Error
 }
 
-func (r *TaskRepositoryImpl) Delete(task *model.Task) (error) {
-    return r.db.Delete(task).Error
+func (r *TaskRepositoryImpl) Delete(id uint) (error) {
+    return r.db.Where("id=?", id).Delete(&model.Task{}).Error
 }

@@ -8,11 +8,16 @@ import (
     "github.com/ant0ine/go-json-rest/rest"
     log "github.com/Sirupsen/logrus"
     "github.com/miraclew/xget/apps/xget/web/controllers"
+    "github.com/jinzhu/gorm"
+    "github.com/miraclew/xget/apps/xget/web/model"
+    "github.com/miraclew/xget/apps/xget/web/repositories"
+    "github.com/miraclew/xget/apps/xget/web/repositories/impl"
 )
 
 var (
     showVersion      = flag.Bool("version", false, "print version stringx")
-    wsIp             = flag.String("ws-ip", "0.0.0.0", "<ip> to listen on for WebSocket clients")
+
+    db *gorm.DB
 )
 
 func main() {
@@ -23,11 +28,25 @@ func main() {
     }
 
     flag.Parse()
+    var err error
+    db, err = gorm.Open("sqlite3", "./xget.db")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    db.AutoMigrate(&model.Task{})
+    defer db.Close()
+
+    runRestApi();
 }
 
 func runRestApi() {
     root := &controllers.RootController{}
-    task := &controllers.TaskController{}
+    var repo repositories.TaskRepository
+    repo = impl.NewTaskRepositoryImpl(db)
+    task := &controllers.TaskController{
+        Repo: repo,
+    }
 
     middlewares := []rest.Middleware{
         &rest.TimerMiddleware{},
@@ -44,7 +63,8 @@ func runRestApi() {
     api.Use(middlewares...)
     router, err := rest.MakeRouter(
         rest.Get("/", root.Get),
-        rest.Get("/tasks", task.GetList),
+        rest.Get("/tasks", task.GetAll),
+        rest.Post("/tasks", task.Add),
         rest.Delete("/tasks/:id", task.Delete),
     )
 

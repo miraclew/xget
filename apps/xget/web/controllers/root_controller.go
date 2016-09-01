@@ -2,12 +2,6 @@ package controllers
 
 import "github.com/ant0ine/go-json-rest/rest"
 
-type JsonResponse struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
-
 type RootController struct {
 
 }

@@ -8,16 +8,19 @@ import (
 
 const (
     url1 = "http://mirrors.hust.edu.cn/apache/kafka/0.10.0.0/kafka-0.10.0.0-src.tgz"
-    url2 = "http://localhost:3000/public/js/ws.js"
+    url2 = "http://localhost:3000/public/js/ws.js?a=b&c=d"
 )
 
 func TestGetFileName(t *testing.T) {
-    var err1, err2 error
     var name1, name2 string
-    name1, err1 = GetFileName(url1)
-    name2, err2 = GetFileName(url2)
+    name1 = GetFileNameFromUrl(url1)
+    name2 = GetFileNameFromUrl(url2)
 
-    if err1 != nil || err2 != nil {
+    if name1 != "kafka-0.10.0.0-src.tgz" {
+        t.Fail()
+    }
+
+    if name2 != "ws.js" {
         t.Fail()
     }
 
@@ -42,7 +45,4 @@ func TestHttpHeaders(t *testing.T) {
     //        fmt.Println("Type: "+contentType)
     //    }
     //}
-
-
-
 }

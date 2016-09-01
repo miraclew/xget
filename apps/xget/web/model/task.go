@@ -8,9 +8,10 @@ import (
 type Task struct {
 	gorm.Model
 
+	Name string
+	OrigUrl string
 	//Resource *Resource
 	//Sources  []*Source
-	Name string
 
 	CompleteAt time.Time
 	Status     int

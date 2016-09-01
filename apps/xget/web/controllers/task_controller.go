@@ -5,40 +5,65 @@ import (
     "github.com/miraclew/xget/apps/xget/web/repositories"
     "github.com/miraclew/xget/apps/xget/web/model"
     "net/http"
+    "github.com/miraclew/xget/speeds/util"
+    "strconv"
 )
 
-type TaskController struct {
-    repo repositories.TaskRepository
+type AddTaskReq struct {
+    URL string
+    BtFile string
 }
 
-func (tc *TaskController) GetList(w rest.ResponseWriter, r *rest.Request) {
+type TaskController struct {
+    Repo repositories.TaskRepository
+}
+
+func (tc *TaskController) GetAll(w rest.ResponseWriter, r *rest.Request) {
+    tasks, err := tc.Repo.GetAll()
+    if err != nil {
+        rest.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
     w.WriteJson(&JsonResponse{
         Code: 0,
         Message: "OK",
-        Data: tc.repo.FindAll(),
+        Data: tasks,
     })
 }
 
 func (tc *TaskController) Add(w rest.ResponseWriter, r *rest.Request) {
-    task := &model.Task{}
-    r.DecodeJsonPayload(task)
-    // TODO: validate
+    req := &AddTaskReq{}
+    r.DecodeJsonPayload(req)
+    if req.URL == "" {
+        rest.Error(w, "url is required", http.StatusBadRequest)
+        return
+    }
 
-    tc.repo.Add(task)
+    // TODO: check if there's any task with same orignUrl exists
+
+    fileName := util.GetFileNameFromUrl(req.URL)
+    task := &model.Task{
+        Name:fileName,
+        OrigUrl:req.URL,
+    }
+
+    tc.Repo.Add(task)
     w.WriteJson(&JsonResponse{
         Code: 0,
         Message: "OK",
-        Data: "",
+        Data: task,
     })
 }
 
 func (tc *TaskController) Delete(w rest.ResponseWriter, r *rest.Request) {
-    id := r.PathParam("id")
-    if len(id) <= 0 {
+    id, err := strconv.ParseUint(r.PathParam("id"), 10, 64)
+    if err != nil {
         rest.Error(w, "invalid request", http.StatusBadRequest)
+        return
     }
 
-    tc.repo.Delete(id)
+    tc.Repo.Delete(uint(id))
 
     w.WriteJson(&JsonResponse{
         Code: 0,

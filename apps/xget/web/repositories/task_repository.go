@@ -5,7 +5,7 @@ import (
 )
 
 type TaskRepository interface {
-    FindAll() ([]model.Task, error)
+    GetAll() ([]model.Task, error)
     Add(t *model.Task) error
     Delete(id uint) error
 }
