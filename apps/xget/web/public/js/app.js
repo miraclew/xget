@@ -3,7 +3,7 @@ var api_url_base = '/api'
 function poll_status() {
     $.ajax({
         type: "GET",
-        url: api_url_base + "/status",
+        url: api_url_base + "/tasks",
         data: {},
         dataType: "json",
         success: function (response) {
