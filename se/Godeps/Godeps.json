@@ -2,5 +2,48 @@
 	"ImportPath": "github.com/miraclew/xget/se",
 	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
-	"Deps": []
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.10.0-28-ga283a10",
+			"Rev": "a283a10442df8dc09befd873fab202bf8a253d6a"
+		},
+		{
+			"ImportPath": "github.com/ant0ine/go-json-rest/rest",
+			"Comment": "v3.3.1-9-g4f1814e",
+			"Rev": "4f1814e6e38174c46a6cccdda906987d04b735f6"
+		},
+		{
+			"ImportPath": "github.com/ant0ine/go-json-rest/rest/trie",
+			"Comment": "v3.3.1-9-g4f1814e",
+			"Rev": "4f1814e6e38174c46a6cccdda906987d04b735f6"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Comment": "v1.0-64-gf26fa24",
+			"Rev": "f26fa242cc1bf884f9a4f98849f70fb8e73f441f"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm/dialects/sqlite",
+			"Comment": "v1.0-64-gf26fa24",
+			"Rev": "f26fa242cc1bf884f9a4f98849f70fb8e73f441f"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/inflection",
+			"Rev": "74387dc39a75e970e7a3ae6a3386b5bd2e5c5cff"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Comment": "v1.1.0-78-gb5c99a7",
+			"Rev": "b5c99a720374818b629fd1fbf6d2cbb4fb9a5644"
+		},
+		{
+			"ImportPath": "github.com/miraclew/xget/speeds/util",
+			"Rev": "1c3fd5921cb88a8fe0afbd4bb79f3dbdb5cf7543"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+		}
+	]
 }
