@@ -3,7 +3,7 @@ package impl
 import (
     "github.com/jinzhu/gorm"
     _ "github.com/jinzhu/gorm/dialects/sqlite"
-    "github.com/miraclew/xget/apps/xget/web/model"
+    "github.com/miraclew/xget/se/models"
 )
 
 type TaskRepositoryImpl struct {
@@ -16,8 +16,8 @@ func NewTaskRepositoryImpl(db *gorm.DB) (*TaskRepositoryImpl) {
     }
 }
 
-func (r *TaskRepositoryImpl) GetAll() ([]model.Task, error) {
-    var tasks []model.Task
+func (r *TaskRepositoryImpl) GetAll() ([]models.Task, error) {
+    var tasks []models.Task
 
     err := r.db.Find(&tasks).Error
     if err != nil {
@@ -27,10 +27,10 @@ func (r *TaskRepositoryImpl) GetAll() ([]model.Task, error) {
     return tasks, nil
 }
 
-func (r *TaskRepositoryImpl) Add(task *model.Task) (error) {
+func (r *TaskRepositoryImpl) Add(task *models.Task) (error) {
     return r.db.Create(task).Error
 }
 
 func (r *TaskRepositoryImpl) Delete(id uint) (error) {
-    return r.db.Where("id=?", id).Delete(&model.Task{}).Error
+    return r.db.Where("id=?", id).Delete(&models.Task{}).Error
 }

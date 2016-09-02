@@ -2,9 +2,9 @@ package impl
 
 import (
     "testing"
-    "github.com/miraclew/xget/apps/xget/web/model"
     "github.com/jinzhu/gorm"
     "log"
+    "github.com/miraclew/xget/se/models"
 )
 
 func TestTaskRepositoryImpl_Add(t *testing.T) {
@@ -12,12 +12,12 @@ func TestTaskRepositoryImpl_Add(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
-    db.AutoMigrate(&model.Task{})
+    db.AutoMigrate(&models.Task{})
 
     defer db.Close()
 
     r := NewTaskRepositoryImpl(db)
-    task := &model.Task{
+    task := &models.Task{
         Name:"TestName",
     }
 
@@ -32,7 +32,7 @@ func TestTaskRepositoryImpl_Delete(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
-    err = db.AutoMigrate(&model.Task{}).Error
+    err = db.AutoMigrate(&models.Task{}).Error
     if err != nil {
         t.Fatal(err)
     }
@@ -40,7 +40,7 @@ func TestTaskRepositoryImpl_Delete(t *testing.T) {
     defer db.Close()
 
     r := NewTaskRepositoryImpl(db)
-    task := &model.Task{
+    task := &models.Task{
         Model: gorm.Model{
             ID: 123,
         },
@@ -58,7 +58,7 @@ func TestTaskRepositoryImpl_FindAll(t *testing.T) {
     if err != nil {
         t.Fatal(err)
     }
-    err = db.AutoMigrate(&model.Task{}).Error
+    err = db.AutoMigrate(&models.Task{}).Error
     if err != nil {
         t.Fatal(err)
     }

@@ -2,11 +2,11 @@ package controllers
 
 import (
     "github.com/ant0ine/go-json-rest/rest"
-    "github.com/miraclew/xget/apps/xget/web/repositories"
-    "github.com/miraclew/xget/apps/xget/web/model"
     "net/http"
     "github.com/miraclew/xget/speeds/util"
     "strconv"
+    "github.com/miraclew/xget/se/repositories"
+    "github.com/miraclew/xget/se/models"
 )
 
 type AddTaskReq struct {
@@ -43,7 +43,7 @@ func (tc *TaskController) Add(w rest.ResponseWriter, r *rest.Request) {
     // TODO: check if there's any task with same orignUrl exists
 
     fileName := util.GetFileNameFromUrl(req.URL)
-    task := &model.Task{
+    task := &models.Task{
         Name:fileName,
         OrigUrl:req.URL,
     }
