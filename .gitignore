@@ -2,6 +2,7 @@
 .env
 version.go
 apps/xget/xget
+apps/thunder/thunder
 apps/xget/kafka-0.10.0.0-src.tgz
 apps/xget/web/public/js/ws.js
 .idea
